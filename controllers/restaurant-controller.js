@@ -111,14 +111,15 @@ const restaurantController = {
     })
       .then(restaurants => {
         // const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
-        // 上面宣告favoritedRestaurantsId變數的寫法過不了測試檔，不知為何?
+        // 上方宣告favoritedRestaurantsId變數的寫法過不了測試檔，不知為何?
         const result = restaurants
           .map(restaurant => ({
             ...restaurant.toJSON(),
             isFavorited: req.user && req.user.FavoritedRestaurants.map(fr => fr.id).includes(restaurant.id),
             favoritedCount: restaurant.FavoritedUsers.length
           }))
-          .sort((a, b) => b.favoritedCount - a.favoritedCount).slice(0, 10)
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+          .slice(0, 10)
         res.render('top-restaurants', { restaurants: result })
       })
       .catch(err => next(err))
