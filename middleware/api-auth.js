@@ -1,8 +1,10 @@
 const passport = require('../config/passport')
 const authenticated = (req, res, next) => {
-  passport.authenticate('jwt', { session: false }, (err, user, info) => {
-    if (err || !user || info) return res.status(401).json({ status: 'error', message: 'unauthorized' })
-    req.user = user
+  passport.authenticate('jwt', { session: false }, (err, user) => {
+    if (!user) return res.status(401).json({ status: 'error', message: 'unauthorized' })
+    req.logIn(user, (error = err) => {
+      if (error) next(error) // req.logIn會自動把user塞回req.user；另logIn()需要含callback function
+    })
     next()
   })(req, res, next)
 }
